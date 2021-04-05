@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/yotz/static/css/main.f1e97ab7.chunk.css",
-    "main.js": "/yotz/static/js/main.eaf11a0f.chunk.js",
-    "main.js.map": "/yotz/static/js/main.eaf11a0f.chunk.js.map",
+    "main.css": "/yotz/static/css/main.ad26f022.chunk.css",
+    "main.js": "/yotz/static/js/main.4c07eabb.chunk.js",
+    "main.js.map": "/yotz/static/js/main.4c07eabb.chunk.js.map",
     "runtime-main.js": "/yotz/static/js/runtime-main.eceab290.js",
     "runtime-main.js.map": "/yotz/static/js/runtime-main.eceab290.js.map",
     "static/js/2.aaa3bcd0.chunk.js": "/yotz/static/js/2.aaa3bcd0.chunk.js",
@@ -10,13 +10,13 @@
     "static/js/3.4b833040.chunk.js": "/yotz/static/js/3.4b833040.chunk.js",
     "static/js/3.4b833040.chunk.js.map": "/yotz/static/js/3.4b833040.chunk.js.map",
     "index.html": "/yotz/index.html",
-    "static/css/main.f1e97ab7.chunk.css.map": "/yotz/static/css/main.f1e97ab7.chunk.css.map",
+    "static/css/main.ad26f022.chunk.css.map": "/yotz/static/css/main.ad26f022.chunk.css.map",
     "static/js/2.aaa3bcd0.chunk.js.LICENSE.txt": "/yotz/static/js/2.aaa3bcd0.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.eceab290.js",
     "static/js/2.aaa3bcd0.chunk.js",
-    "static/css/main.f1e97ab7.chunk.css",
-    "static/js/main.eaf11a0f.chunk.js"
+    "static/css/main.ad26f022.chunk.css",
+    "static/js/main.4c07eabb.chunk.js"
   ]
 }
