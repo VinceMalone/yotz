@@ -1,0 +1,37 @@
+[
+  {
+    "id": "alex-alex-alex",
+    "name": "Alex",
+    "theme": { "meterBackgroundColor": "#a7f3cf" },
+    "timezone": "Europe/London",
+    "workingHours": { "start": 10, "length": 8 }
+  },
+  {
+    "id": "andreas-andreas-andreas",
+    "name": "Andreas",
+    "theme": { "meterBackgroundColor": "#bfdbfe" },
+    "timezone": "Europe/London",
+    "workingHours": { "start": 9, "length": 8 }
+  },
+  {
+    "id": "jen-jen-jen",
+    "name": "Jen",
+    "theme": { "meterBackgroundColor": "#ddd6fe" },
+    "timezone": "America/New_York",
+    "workingHours": { "start": 10, "length": 9 }
+  },
+  {
+    "id": "vince-vince-vince",
+    "name": "Vince",
+    "theme": { "meterBackgroundColor": "#fde68a" },
+    "timezone": "America/Detroit",
+    "workingHours": { "start": 9, "length": 8 }
+  },
+  {
+    "id": "zack-zack-zack",
+    "name": "Zack",
+    "theme": { "meterBackgroundColor": "#fbd0e8" },
+    "timezone": "America/Vancouver",
+    "workingHours": { "start": 9, "length": 8 }
+  }
+]

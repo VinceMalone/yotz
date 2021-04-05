@@ -2,14 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@variants hover {
+  .button--disabled {
+    @apply disabled:opacity-50 disabled:bg-gray-100 disabled:cursor-default;
+  }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+@layer utilities {
+  .isolate {
+    isolation: isolate;
+  }
+}
+
+@layer components {
+  .icon-button {
+    @apply h-8 w-8 text-base text-black bg-white hover:bg-gray-50 border border-gray-300 rounded-sm;
+    @apply button--disabled hover:button--disabled;
+  }
+
+  .button-base {
+    @apply px-3 py-1 text-base text-black bg-white rounded-md shadow-md active:shadow-sm;
+    @apply button--disabled hover:button--disabled;
+  }
+
+  .button--primary {
+    @apply button-base bg-yellow-200 hover:bg-yellow-300;
+  }
+
+  .button--secondary {
+    @apply button-base bg-gray-200 hover:bg-gray-300;
+  }
+
+  .form-field {
+    @apply flex flex-col items-start space-y-1;
+  }
+
+  .label {
+    @apply text-gray-600 text-sm;
+  }
+
+  .input {
+    @apply rounded-sm border border-gray-400 h-8 px-2;
+  }
+
+  .picker {
+    @apply rounded-sm border border-gray-400 h-8;
+    /* at least make it look nice in Chrome... */
+    padding: 0 4px;
+  }
 }
