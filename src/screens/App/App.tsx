@@ -43,23 +43,34 @@ export function App() {
     handleMove(person, delta * -1);
   }
 
+  const empty = personState.length === 0;
+
   return (
     <div className="p-6 space-y-12">
       <header className="flex items-end space-x-8">
-        <MeterViewModePicker onChange={setMeterViewMode} value={meterViewMode} />
-        <TimeFormatSwitch />
-        <AddPerson onAdd={handleAdd} />
+        <AddPerson autoOpen={empty} onAdd={handleAdd} />
+        <div className="flex-1 flex flex-col sm:flex-row items-end justify-end space-y-2 sm:space-y-0 sm:space-x-8">
+          <TimeFormatSwitch />
+          <MeterViewModePicker onChange={setMeterViewMode} value={meterViewMode} />
+        </div>
       </header>
-      {personState.map((person, index) => (
-        <PersonDetail
-          key={person.id}
-          meterViewMode={meterViewMode}
-          onDelete={handleDelete}
-          onMoveDown={index + 1 < personState.length ? handleMoveDown : undefined}
-          onMoveUp={index > 0 ? handleMoveUp : undefined}
-          person={person}
-        />
-      ))}
+      {empty ? (
+        <section className="text-center space-y-2 py-6">
+          <p>📭</p>
+          <h1 className="font-semibold text-xl">Empty — add a person</h1>
+        </section>
+      ) : (
+        personState.map((person, index) => (
+          <PersonDetail
+            key={person.id}
+            meterViewMode={meterViewMode}
+            onDelete={handleDelete}
+            onMoveDown={index + 1 < personState.length ? handleMoveDown : undefined}
+            onMoveUp={index > 0 ? handleMoveUp : undefined}
+            person={person}
+          />
+        ))
+      )}
       <Dev personState={personState} setPersonState={setPersonState} />
     </div>
   );

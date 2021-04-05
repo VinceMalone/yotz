@@ -66,7 +66,7 @@ interface TimezonePickerProps extends Omit<SelectHTMLAttributes<HTMLSelectElemen
 
 export function TimezonePicker(props: TimezonePickerProps) {
   return (
-    <select className="picker" {...props}>
+    <select {...props} className="picker min-w-full" required>
       <TimezoneOptions />
     </select>
   );

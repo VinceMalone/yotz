@@ -5,7 +5,9 @@ export function TimeFormatSwitch() {
 
   return (
     <div className="flex items-center space-x-2 h-8">
-      <label htmlFor="hour-12__switch">Use 12 hour time format</label>
+      <label className="leading-tight" htmlFor="hour-12__switch" style={{ textAlign: 'end' }}>
+        Use 12 hour time format
+      </label>
       <input
         checked={hour12}
         id="hour-12__switch"

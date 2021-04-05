@@ -37,17 +37,30 @@ function timeToNumber(value: string) {
   return hour + minute / 60;
 }
 
+function useEffectOnce(effect: () => void) {
+  React.useEffect(() => {
+    effect();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
 interface AddPersonProps {
+  autoOpen: boolean;
   onAdd(person: Person): void;
 }
 
-export function AddPerson({ onAdd }: AddPersonProps) {
+export function AddPerson({ autoOpen, onAdd }: AddPersonProps) {
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const dialogRef = React.useRef<HTMLDialogElement>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
 
+  useEffectOnce(() => {
+    if (autoOpen) {
+      openDialog();
+    }
+  });
+
   function openDialog() {
-    if (dialogRef.current) {
+    if (dialogRef.current && !dialogRef.current.open) {
       // backdrop is only displayed when dialog is opened with dialog.showModal()
       dialogRef.current.showModal();
     }
@@ -98,7 +111,7 @@ export function AddPerson({ onAdd }: AddPersonProps) {
       </button>
       <dialog
         aria-label="Add person"
-        className="rounded-md shadow-lg z-50"
+        className="rounded-md shadow-lg z-50 min-w-dialog"
         onClose={handleClose}
         ref={dialogRef}
       >
