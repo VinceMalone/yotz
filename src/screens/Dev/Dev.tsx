@@ -19,22 +19,21 @@ export function Dev({ personState, setPersonState }: DevProps) {
 
   return (
     <details>
-      <summary>Dev</summary>
+      <summary>Dev tools</summary>
       <div className="pt-4 space-y-4">
-        <button
-          className="button--primary"
-          onClick={() => setPersonState(mockPersonState)}
-          type="button"
-        >
-          reset state to default
-        </button>
         <form aria-label="Set JSON state" className="space-y-2" onSubmit={handleSetPersonState}>
-          <textarea
-            className="border border-gray-500 font-mono text-sm w-full"
-            rows={24}
-            defaultValue={JSON.stringify(personState, null, 2)}
-            name="state-json"
-          />
+          <div className="form-field">
+            <label className="label" htmlFor="dev__current-state">
+              Current state
+            </label>
+            <textarea
+              className="border border-gray-500 font-mono text-sm w-full"
+              defaultValue={JSON.stringify(personState, null, 2)}
+              id="dev__current-state"
+              name="state-json"
+              rows={24}
+            />
+          </div>
           <div className="space-x-2">
             <button className="button--primary" type="submit">
               set
@@ -44,6 +43,13 @@ export function Dev({ personState, setPersonState }: DevProps) {
             </button>
           </div>
         </form>
+        <button
+          className="button--primary"
+          onClick={() => setPersonState(mockPersonState)}
+          type="button"
+        >
+          set state to mock data
+        </button>
       </div>
     </details>
   );
