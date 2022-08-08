@@ -1,4 +1,4 @@
-import { Temporal } from 'proposal-temporal';
+import { Temporal } from '@js-temporal/polyfill';
 import * as React from 'react';
 import type { SelectHTMLAttributes } from 'react';
 
@@ -15,7 +15,7 @@ const lazyTimezoneOptions = new Promise<TimezoneOption[]>((resolve) => {
       timezones
         .map((timezone) => {
           const tz = Temporal.TimeZone.from(timezone.TZ);
-          const offset = tz.getOffsetStringFor(Temporal.now.instant());
+          const offset = tz.getOffsetStringFor?.(Temporal.Now.instant());
           return {
             label: `${timezone.TZ} (${offset})`,
             value: timezone.TZ,

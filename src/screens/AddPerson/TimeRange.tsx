@@ -1,4 +1,4 @@
-import { Temporal } from 'proposal-temporal';
+import { Temporal } from '@js-temporal/polyfill';
 import * as React from 'react';
 
 const hoursInDay = Array.from({ length: 24 }, (_, i) => i);

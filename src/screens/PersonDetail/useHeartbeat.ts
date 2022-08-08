@@ -6,7 +6,7 @@ import { MulticastObservable } from '../../utils/Observable';
  * https://youtu.be/MCi6AZMkxcU
  */
 function animationInterval(ms: number, signal: AbortSignal, callback: (time: number) => void) {
-  // Prefer currentTime, as it'll better sync animtions queued in the
+  // Prefer currentTime, as it'll better sync animations queued in the
   // same frame, but if it isn't supported, performance.now() is fine.
   const start = document.timeline?.currentTime ?? performance.now();
 

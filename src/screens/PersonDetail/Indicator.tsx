@@ -1,4 +1,4 @@
-import { Temporal } from 'proposal-temporal';
+import { Temporal } from '@js-temporal/polyfill';
 import * as React from 'react';
 
 import { useHeartbeat } from './useHeartbeat';
@@ -16,7 +16,7 @@ function currentPercent(
   start: DayTimeDescriptor,
   end: DayTimeDescriptor,
   timeZone: string,
-  nowInstant: Temporal.Instant = Temporal.now.instant(),
+  nowInstant: Temporal.Instant = Temporal.Now.instant(),
 ) {
   const { calendar } = new Intl.DateTimeFormat().resolvedOptions();
   const now = nowInstant.toZonedDateTime({ calendar, timeZone });
