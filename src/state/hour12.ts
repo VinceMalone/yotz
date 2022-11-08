@@ -1,5 +1,4 @@
-import { useAtom } from 'jotai';
-import { atomWithReducer } from 'jotai/utils';
+import { createEffect, createRoot, createSignal } from 'solid-js';
 
 function getDefaultValue(): boolean {
   const format = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: 'numeric' });
@@ -38,14 +37,11 @@ function setStorageValue<T>(key: string, value: T): void {
 
 const storageKey = '12hour';
 
-const hour12Atom = atomWithReducer(
-  getStorageValue(storageKey, getDefaultValue()),
-  (_, value: boolean) => {
-    setStorageValue(storageKey, value);
-    return value;
-  },
-);
-
-export function useHour12State() {
-  return useAtom(hour12Atom);
+function createHour12Signal() {
+  const initialValue = getStorageValue(storageKey, getDefaultValue());
+  const [value, setValue] = createSignal(initialValue);
+  createEffect(() => setStorageValue(storageKey, value()));
+  return [value, setValue] as const;
 }
+
+export const hour12Signal = createRoot(createHour12Signal);

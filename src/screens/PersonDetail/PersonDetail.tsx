@@ -1,3 +1,7 @@
+import { createMemo } from 'solid-js';
+import type { Component } from 'solid-js';
+
+import { meterViewModeSignal } from '../../state/queryParamSignals';
 import type { MeterViewMode, Person } from '../../types';
 
 import { Meter } from './Meter';
@@ -16,66 +20,60 @@ function getMeterTimeProps(mode: MeterViewMode, person: Person): { start: number
 }
 
 interface PersonDetailProps {
-  meterViewMode: MeterViewMode;
   onDelete(person: Person): void;
   onMoveDown?(person: Person, delta: number): void;
   onMoveUp?(person: Person, delta: number): void;
   person: Person;
 }
 
-export function PersonDetail({
-  meterViewMode,
-  onDelete,
-  onMoveDown,
-  onMoveUp,
-  person,
-}: PersonDetailProps) {
-  const { start, length } = getMeterTimeProps(meterViewMode, person);
+export const PersonDetail: Component<PersonDetailProps> = (props) => {
+  const [meterViewMode] = meterViewModeSignal;
+  const info = createMemo(() => getMeterTimeProps(meterViewMode(), props.person));
 
   function handleDelete() {
-    const message = `Are you sure you want to delete ${person.name} in "${person.timezone}"?`;
+    const message = `Are you sure you want to delete ${props.person.name} in "${props.person.timezone}"?`;
     if (window.confirm(message)) {
-      onDelete(person);
+      props.onDelete(props.person);
     }
   }
 
   return (
-    <article className="space-y-2">
-      <header className="flex items-center justify-between space-x-8">
+    <article class="space-y-2">
+      <header class="flex items-center justify-between space-x-8">
         <div>
-          <h1 className="text-2xl">{person.name}</h1>
-          <p className="text-base">{person.timezone}</p>
+          <h1 class="text-2xl">{props.person.name}</h1>
+          <p class="text-base">{props.person.timezone}</p>
         </div>
-        <div className="space-x-2">
+        <div class="space-x-2">
           <button
             aria-label="Move up"
-            className="icon-button"
-            disabled={onMoveUp == null}
-            onClick={() => onMoveUp?.(person, 1)}
+            class="icon-button"
+            disabled={props.onMoveUp == null}
+            onClick={() => props.onMoveUp?.(props.person, 1)}
           >
             ⬆️
           </button>
           <button
             aria-label="Move down"
-            className="icon-button"
-            disabled={onMoveDown == null}
-            onClick={() => onMoveDown?.(person, 1)}
+            class="icon-button"
+            disabled={props.onMoveDown == null}
+            onClick={() => props.onMoveDown?.(props.person, 1)}
           >
             ⬇️
           </button>
-          <button aria-label="Delete" className="icon-button" onClick={handleDelete}>
+          <button aria-label="Delete" class="icon-button" onClick={handleDelete}>
             🗑
           </button>
         </div>
       </header>
       <Meter
-        color={person.theme.meterBackgroundColor}
-        highlightHourStart={person.workingHours.start}
-        highlightLength={person.workingHours.length}
-        hourStart={start}
-        length={length}
-        timeZone={person.timezone}
+        color={props.person.theme.meterBackgroundColor}
+        highlightHourStart={props.person.workingHours.start}
+        highlightLength={props.person.workingHours.length}
+        hourStart={info().start}
+        length={info().length}
+        timeZone={props.person.timezone}
       />
     </article>
   );
-}
+};

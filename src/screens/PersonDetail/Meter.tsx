@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { createMemo, For } from 'solid-js';
+import type { Component } from 'solid-js';
 
 import { Indicator } from './Indicator';
 import { TimeMarker } from './TimeMarker';
@@ -12,42 +13,45 @@ interface MeterProps {
   timeZone: string;
 }
 
-export function Meter({
-  color = 'white',
-  highlightHourStart,
-  highlightLength,
-  hourStart,
-  length,
-  timeZone,
-}: MeterProps) {
-  const hourEnd = hourStart + length;
-  const highlightEndHour = highlightHourStart + highlightLength;
+export const Meter: Component<MeterProps> = (props) => {
+  const hourEnd = () => props.hourStart + props.length;
+  const highlightEndHour = () => props.highlightHourStart + props.highlightLength;
+
+  const markers = createMemo(() => {
+    const defaultColor = 'white';
+    const highlightColor = props.color ?? defaultColor;
+    return Array.from({ length: props.length }, (_, i) => {
+      const hour = props.hourStart + i;
+      const color =
+        hour >= props.highlightHourStart && hour < highlightEndHour()
+          ? highlightColor
+          : defaultColor;
+      return {
+        color,
+        hour,
+      };
+    });
+  });
 
   return (
-    <div className="pt-6">
-      <div className="flex h-6 relative isolate">
-        {Array(Math.ceil(length))
-          .fill(null)
-          .map((_, i) => {
-            const hour = hourStart + i;
-            const highlightColor =
-              hour >= highlightHourStart && hour < highlightEndHour ? color : 'white';
-
-            return (
-              <React.Fragment key={hour}>
-                <TimeMarker hour={hour} minute={0} />
-                <div className="flex-1" style={{ backgroundColor: highlightColor }} />
-              </React.Fragment>
-            );
-          })}
+    <div class="pt-6">
+      <div class="flex h-6 relative isolate">
+        <For each={markers()}>
+          {({ color, hour }) => (
+            <>
+              <TimeMarker hour={hour} minute={0} />
+              <div class="flex-1" style={{ 'background-color': color }} />
+            </>
+          )}
+        </For>
         <Indicator
-          endHour={hourEnd}
+          endHour={hourEnd()}
           endMinute={0}
-          startHour={hourStart}
+          startHour={props.hourStart}
           startMinute={0}
-          timeZone={timeZone}
+          timeZone={props.timeZone}
         />
       </div>
     </div>
   );
-}
+};

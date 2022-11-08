@@ -1,17 +1,10 @@
-import * as React from 'react';
-import type { FormEvent } from 'react';
+import { onMount } from 'solid-js';
+import type { Component, JSX } from 'solid-js';
 
 import type { Person } from '../../types';
 
 import { TimeRange } from './TimeRange';
 import { TimezonePicker } from './TimezonePicker';
-
-declare module 'react' {
-  interface DialogHTMLAttributes<T> extends HTMLAttributes<T> {
-    onCancel?: ReactEventHandler<T>;
-    onClose?: ReactEventHandler<T>;
-  }
-}
 
 const id = {
   meterBackgroundColor: 'add-person__meterBackgroundColor',
@@ -37,47 +30,41 @@ function timeToNumber(value: string) {
   return hour + minute / 60;
 }
 
-function useEffectOnce(effect: () => void) {
-  React.useEffect(() => {
-    effect();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-}
-
 interface AddPersonProps {
   autoOpen: boolean;
   onAdd(person: Person): void;
 }
 
-export function AddPerson({ autoOpen, onAdd }: AddPersonProps) {
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
-  const dialogRef = React.useRef<HTMLDialogElement>(null);
-  const formRef = React.useRef<HTMLFormElement>(null);
+export const AddPerson: Component<AddPersonProps> = ({ autoOpen, onAdd }) => {
+  let triggerRef: HTMLButtonElement | undefined;
+  let dialogRef: HTMLDialogElement | undefined;
+  let formRef: HTMLFormElement | undefined;
 
-  useEffectOnce(() => {
+  onMount(() => {
     if (autoOpen) {
       openDialog();
     }
   });
 
   function openDialog() {
-    if (dialogRef.current && !dialogRef.current.open) {
+    if (dialogRef && !dialogRef.open) {
       // backdrop is only displayed when dialog is opened with dialog.showModal()
-      dialogRef.current.showModal();
+      dialogRef.showModal();
     }
   }
 
   function resetForm() {
-    if (formRef.current) {
-      formRef.current.reset();
+    if (formRef) {
+      formRef.reset();
     }
   }
 
   function handleClose() {
     resetForm();
-    triggerRef.current?.focus();
+    triggerRef?.focus();
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const handleSubmit: JSX.EventHandler<HTMLFormElement, SubmitEvent> = (event) => {
     const form = event.currentTarget;
     const meterBackgroundColor = getFormControlValue(form, id.meterBackgroundColor);
     const name = getFormControlValue(form, id.name);
@@ -97,65 +84,56 @@ export function AddPerson({ autoOpen, onAdd }: AddPersonProps) {
         length: workingHoursEnd - workingHoursStart,
       },
     });
-  }
+  };
 
   return (
     <section>
-      <button
-        className="button--primary"
-        onClick={() => openDialog()}
-        ref={triggerRef}
-        type="button"
-      >
+      <button class="button--primary" onClick={() => openDialog()} ref={triggerRef} type="button">
         Add person
       </button>
       <dialog
         aria-label="Add person"
-        className="rounded-md shadow-lg z-50 min-w-dialog"
+        class="rounded-md shadow-lg z-50 min-w-dialog"
         onClose={handleClose}
         ref={dialogRef}
       >
-        <form className="space-y-4" method="dialog" onSubmit={handleSubmit} ref={formRef}>
-          <div className="form-field">
-            <label className="label" htmlFor={id.name}>
+        <form class="space-y-4" method="dialog" onSubmit={handleSubmit} ref={formRef}>
+          <div class="form-field">
+            <label class="label" for={id.name}>
               Name
             </label>
-            <input className="input" id={id.name} name={id.name} required size={24} type="text" />
+            <input class="input" id={id.name} name={id.name} required size={24} type="text" />
           </div>
-          <div className="form-field">
-            <label className="label" htmlFor={id.timezone}>
+          <div class="form-field">
+            <label class="label" for={id.timezone}>
               Timezone
             </label>
             <TimezonePicker id={id.timezone} name={id.timezone} />
           </div>
-          <fieldset className="border p-2">
-            <legend className="label px-1">Working Hours</legend>
-            <div className="space-y-4 px-1">
-              <div className="form-field">
+          <fieldset class="border p-2">
+            <legend class="label px-1">Working Hours</legend>
+            <div class="space-y-4 px-1">
+              <div class="form-field">
                 <TimeRange endName={id.workingHoursEnd} startName={id.workingHoursStart} />
               </div>
-              <div className="form-field">
-                <label className="label" htmlFor={id.meterBackgroundColor}>
+              <div class="form-field">
+                <label class="label" for={id.meterBackgroundColor}>
                   Background Color
                 </label>
                 <input
-                  defaultValue="#ffffff"
                   id={id.meterBackgroundColor}
                   name={id.meterBackgroundColor}
                   type="color"
+                  value="#ffffff"
                 />
               </div>
             </div>
           </fieldset>
-          <div className="space-x-2">
-            <button className="button--primary" type="submit">
+          <div class="space-x-2">
+            <button class="button--primary" type="submit">
               Add
             </button>
-            <button
-              className="button--secondary"
-              onClick={() => dialogRef.current?.close()}
-              type="button"
-            >
+            <button class="button--secondary" onClick={() => dialogRef?.close()} type="button">
               Cancel
             </button>
           </div>
@@ -163,4 +141,4 @@ export function AddPerson({ autoOpen, onAdd }: AddPersonProps) {
       </dialog>
     </section>
   );
-}
+};

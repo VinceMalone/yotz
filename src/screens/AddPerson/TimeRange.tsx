@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
-import * as React from 'react';
+import { createSignal, For } from 'solid-js';
+import type { Component } from 'solid-js';
 
 const hoursInDay = Array.from({ length: 24 }, (_, i) => i);
 
@@ -10,61 +11,53 @@ function toTimeValue(time: Temporal.PlainTime): string {
   return time.toLocaleString(undefined, { hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
 }
 
-const TimeOptions = React.memo(function TimeOptions() {
-  return (
-    <datalist id="working-hour-options">
-      {hoursInDay.map((hour) => {
-        const time = new Temporal.PlainTime(hour);
-        return (
-          <React.Fragment key={hour}>
-            <option value={toTimeValue(time)} />
-            <option value={toTimeValue(time.add({ minutes: 30 }))} />
-          </React.Fragment>
-        );
-      })}
-    </datalist>
-  );
-});
-
 interface TimeRangeProps {
   endName: string;
   startName: string;
 }
 
-export const TimeRange = React.memo(function TimeRange({ endName, startName }: TimeRangeProps) {
-  const [workingStartTime, setWorkingStartTime] = React.useState(() =>
-    Temporal.PlainTime.from('09:00'),
-  );
-  const [workingEndTime, setWorkingEndTime] = React.useState(() =>
-    Temporal.PlainTime.from('17:00'),
-  );
+export const TimeRange: Component<TimeRangeProps> = ({ endName, startName }) => {
+  const [workingStartTime, setWorkingStartTime] = createSignal('09:00');
+  const [workingEndTime, setWorkingEndTime] = createSignal('17:00');
 
   return (
     <div>
       <input
         aria-label="Start time"
-        className="input"
-        defaultValue="09:00"
+        class="input"
         list="working-hour-options"
-        max={toTimeValue(workingEndTime.subtract({ minutes: 30 }))}
+        max={toTimeValue(Temporal.PlainTime.from(workingEndTime()).subtract({ minutes: 30 }))}
         name={startName}
-        onChange={(event) => setWorkingStartTime(Temporal.PlainTime.from(event.target.value))}
+        onChange={(event) => setWorkingStartTime(event.currentTarget.value)}
         step="1800"
         type="time"
+        value={workingStartTime()}
       />
       {' – '}
       <input
         aria-label="End time"
-        className="input"
-        defaultValue="17:00"
+        class="input"
         list="working-hour-options"
-        min={toTimeValue(workingStartTime.add({ minutes: 30 }))}
+        min={toTimeValue(Temporal.PlainTime.from(workingStartTime()).add({ minutes: 30 }))}
         name={endName}
-        onChange={(event) => setWorkingEndTime(Temporal.PlainTime.from(event.target.value))}
+        onChange={(event) => setWorkingEndTime(event.currentTarget.value)}
         step="1800"
         type="time"
+        value={workingEndTime()}
       />
-      <TimeOptions />
+      <datalist id="working-hour-options">
+        <For each={hoursInDay}>
+          {(hour) => {
+            const time = new Temporal.PlainTime(hour);
+            return (
+              <>
+                <option value={toTimeValue(time)} />
+                <option value={toTimeValue(time.add({ minutes: 30 }))} />
+              </>
+            );
+          }}
+        </For>
+      </datalist>
     </div>
   );
-});
+};

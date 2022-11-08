@@ -1,7 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill';
-import * as React from 'react';
+import { createEffect, createSignal, onCleanup } from 'solid-js';
+import type { Component } from 'solid-js';
 
-import { useHeartbeat } from './useHeartbeat';
+import { heartbeat } from './heartbeat';
 
 function round(num: number) {
   return Math.round((num + Number.EPSILON) * 1000000) / 1000000;
@@ -37,34 +38,40 @@ interface IndicatorProps {
   timeZone: string;
 }
 
-export const Indicator = React.memo(function Indicator({
-  endHour,
-  endMinute,
-  startHour,
-  startMinute,
-  timeZone,
-}: IndicatorProps) {
-  useHeartbeat();
+export const Indicator: Component<IndicatorProps> = (props) => {
+  function getLeft() {
+    /**
+     * Looking into a performance concern? It's probably this function — the
+     * Temporal polyfill is slow — this function can take upwards of 8ms to run.
+     */
+    return currentPercent(
+      { hour: props.startHour, minute: props.startMinute },
+      { hour: props.endHour, minute: props.endMinute },
+      props.timeZone,
+      // Temporal.Instant.from('2000-01-01T12:00:00-05:00'),
+    );
+  }
+
+  const [left, setLeft] = createSignal(getLeft());
+
+  createEffect(() => setLeft(getLeft()));
+
+  const unsubscribe = heartbeat.subscribe(() => {
+    setLeft(getLeft());
+  });
+
+  onCleanup(() => {
+    unsubscribe();
+  });
 
   const pxWidth = 2;
 
-  /**
-   * Looking into a performance concern? It's probably this function — the
-   * Temporal polyfill is slow — this function can take upwards of 8ms to run.
-   */
-  const left = currentPercent(
-    { hour: startHour, minute: startMinute },
-    { hour: endHour, minute: endMinute },
-    timeZone,
-    // Temporal.Instant.from('2000-01-01T12:00:00-05:00'),
-  );
-
   return (
     <div
-      className="absolute z-20 -top-2 -bottom-3 min-h-full w-0.5 bg-red-500"
-      style={{ left: `calc(${left * 100}% - ${pxWidth * left}px)` }}
+      class="absolute z-20 -top-2 -bottom-3 min-h-full w-0.5 bg-red-500"
+      style={{ left: `calc(${left() * 100}% - ${pxWidth * left()}px)` }}
     >
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-2 w-2 rounded-full bg-red-500" />
+      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-2 w-2 rounded-full bg-red-500" />
     </div>
   );
-});
+};

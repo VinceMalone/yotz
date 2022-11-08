@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
-import * as React from 'react';
-import type { SelectHTMLAttributes } from 'react';
+import { createResource, For } from 'solid-js';
+import type { Component, JSX } from 'solid-js';
 
 import timezones from '../../__generated__/timezones.json';
 import { requestIdleCallback } from '../../utils/requestIdleCallback';
@@ -31,43 +31,15 @@ interface TimezoneOption {
   value: string;
 }
 
-function useLazyTimezoneOptions(): TimezoneOption[] {
-  const mountedRef = React.useRef(true);
-  const [options, setOptions] = React.useState<TimezoneOption[]>([]);
+interface TimezonePickerProps
+  extends Omit<JSX.SelectHTMLAttributes<HTMLSelectElement>, 'children'> {}
 
-  React.useEffect(() => {
-    lazyTimezoneOptions.then((timezoneOptions) => {
-      if (mountedRef.current) {
-        setOptions(timezoneOptions);
-      }
-    });
-  }, []);
-
-  return options;
-}
-
-const TimezoneOptions = React.memo(function TimezoneOptions() {
-  const options = useLazyTimezoneOptions();
+export const TimezonePicker: Component<TimezonePickerProps> = (props) => {
+  const [options] = createResource(() => lazyTimezoneOptions);
 
   return (
-    <>
-      {options.map(({ label, value }) => {
-        return (
-          <option key={value} value={value}>
-            {label}
-          </option>
-        );
-      })}
-    </>
-  );
-});
-
-interface TimezonePickerProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'children'> {}
-
-export function TimezonePicker(props: TimezonePickerProps) {
-  return (
-    <select {...props} className="picker min-w-full" required>
-      <TimezoneOptions />
+    <select {...props} class="picker min-w-full" required>
+      <For each={options()}>{({ label, value }) => <option value={value}>{label}</option>}</For>
     </select>
   );
-}
+};
